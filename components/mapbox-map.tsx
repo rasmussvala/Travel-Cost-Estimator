@@ -5,13 +5,163 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useTheme } from "next-themes";
 
+type Coordinates = [number, number]; // [longitude, latitude]
+
+interface DirectionsResponse {
+  routes: Array<{
+    geometry: {
+      coordinates: Coordinates[];
+      type: string;
+    };
+    legs: Array<{
+      distance: number;
+      duration: number;
+    }>;
+    distance: number;
+    duration: number;
+  }>;
+  waypoints: Array<{
+    distance: number;
+    name: string;
+    location: Coordinates;
+  }>;
+  code: string;
+}
+
 export default function MapboxMap() {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { resolvedTheme } = useTheme();
   const [ismounted, setIsMounted] = useState(false);
+  const [routeData, setRouteData] = useState<DirectionsResponse | null>(null);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
+
+  // Directions API function
+  const getDirections = async (
+    start: Coordinates,
+    end: Coordinates,
+    profile: string = "driving"
+  ) => {
+    if (!start || !end) return;
+
+    try {
+      const query = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/${profile}/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${token}`
+      );
+
+      if (!query.ok) {
+        throw new Error(`HTTP error! status: ${query.status}`);
+      }
+
+      const json: DirectionsResponse = await query.json();
+
+      if (json.routes && json.routes.length > 0) {
+        setRouteData(json);
+        displayRouteOnMap(json.routes[0]);
+      } else {
+        console.error("No routes found");
+      }
+    } catch (error) {
+      console.error("Error fetching directions:", error);
+    }
+  };
+
+  // Display route on map
+  const displayRouteOnMap = (route: DirectionsResponse["routes"][0]) => {
+    if (!mapRef.current) return;
+
+    const map = mapRef.current;
+
+    // Remove existing route layer if it exists
+    if (map.getLayer("route")) {
+      map.removeLayer("route");
+    }
+    if (map.getSource("route")) {
+      map.removeSource("route");
+    }
+
+    // Add route source and layer
+    map.addSource("route", {
+      type: "geojson",
+      data: {
+        type: "Feature",
+        properties: {},
+        geometry: route.geometry,
+      },
+    });
+
+    map.addLayer({
+      id: "route",
+      type: "line",
+      source: "route",
+      layout: {
+        "line-join": "round",
+        "line-cap": "round",
+      },
+      paint: {
+        "line-color": "#3887be",
+        "line-width": 5,
+        "line-opacity": 0.75,
+      },
+    });
+
+    // Fit map to route bounds
+    const coordinates = route.geometry.coordinates;
+    const bounds = new mapboxgl.LngLatBounds();
+    coordinates.forEach((coord) => bounds.extend(coord as [number, number]));
+    map.fitBounds(bounds, { padding: 50 });
+  };
+
+  // Add markers for start and end points
+  const addMarkers = (start: Coordinates, end: Coordinates) => {
+    if (!mapRef.current) return;
+
+    // Remove existing markers
+    const existingMarkers = document.querySelectorAll(".custom-marker");
+    existingMarkers.forEach((marker) => marker.remove());
+
+    // Start marker (green)
+    new mapboxgl.Marker({ color: "#22c55e" })
+      .setLngLat(start)
+      .addTo(mapRef.current);
+
+    // End marker (red)
+    new mapboxgl.Marker({ color: "#ef4444" })
+      .setLngLat(end)
+      .addTo(mapRef.current);
+  };
+
+  // Example function to get directions between two points
+  const getExampleDirections = () => {
+    // Example coordinates: Stockholm to Gothenburg
+    const start: Coordinates = [18.0686, 59.3293]; // Stockholm
+    const end: Coordinates = [11.9746, 57.7089]; // Gothenburg
+
+    addMarkers(start, end);
+    getDirections(start, end, "driving");
+  };
+
+  // Clear route from map
+  const clearRoute = () => {
+    if (!mapRef.current) return;
+
+    const map = mapRef.current;
+
+    // Remove route layer and source
+    if (map.getLayer("route")) {
+      map.removeLayer("route");
+    }
+    if (map.getSource("route")) {
+      map.removeSource("route");
+    }
+
+    // Remove markers
+    const existingMarkers = document.querySelectorAll(".mapboxgl-marker");
+    existingMarkers.forEach((marker) => marker.remove());
+
+    setRouteData(null);
+  };
 
   // Create map on mount
   useEffect(() => {
@@ -58,9 +208,38 @@ export default function MapboxMap() {
   }, [resolvedTheme, ismounted]);
 
   return (
-    <div
-      ref={mapContainer}
-      className="w-full h-[400px] rounded-lg overflow-hidden"
-    />
+    <div className="w-full">
+      <div
+        ref={mapContainer}
+        className="w-full h-[400px] rounded-lg overflow-hidden"
+      />
+
+      {/* Control buttons */}
+      <div className="mb-4 space-x-2">
+        <button
+          onClick={getExampleDirections}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+        >
+          Get Directions
+        </button>
+        <button
+          onClick={clearRoute}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          Clear Route
+        </button>
+      </div>
+
+      {/* Route information */}
+      {routeData && routeData.routes[0] && (
+        <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <h3 className="font-semibold mb-2">Route Information:</h3>
+          <p>Distance: {(routeData.routes[0].distance / 1000).toFixed(2)} km</p>
+          <p>
+            Duration: {Math.round(routeData.routes[0].duration / 60)} minutes
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
