@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useTheme } from "next-themes";
+import { Button } from "./ui/button";
 
 type Coordinates = [number, number]; // [longitude, latitude]
 
@@ -212,29 +213,19 @@ export default function MapboxMap() {
     <div className="w-full">
       <div
         ref={mapContainer}
-        className="w-full h-[400px] rounded-lg overflow-hidden"
+        className="h-[400px] rounded-lg overflow-hidden"
       />
 
       {/* Control buttons */}
-      <div className="mb-4 space-x-2">
-        <button
-          onClick={getExampleDirections}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-        >
-          Get Directions
-        </button>
-        <button
-          onClick={clearRoute}
-          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-        >
-          Clear Route
-        </button>
+      <div className="space-x-2">
+        <Button onClick={getExampleDirections}>Get Directions</Button>
+        <Button onClick={clearRoute}>Clear Route</Button>
       </div>
 
       {/* Route information */}
       {routeData && routeData.routes[0] && (
-        <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-          <h3 className="font-semibold mb-2">Route Information:</h3>
+        <div>
+          <h3 className="font-semibold">Route Information:</h3>
           <p>Distance: {(routeData.routes[0].distance / 1000).toFixed(2)} km</p>
         </div>
       )}
