@@ -15,10 +15,8 @@ interface DirectionsResponse {
     };
     legs: Array<{
       distance: number;
-      duration: number;
     }>;
     distance: number;
-    duration: number;
   }>;
   waypoints: Array<{
     distance: number;
@@ -87,7 +85,10 @@ export default function MapboxMap() {
       data: {
         type: "Feature",
         properties: {},
-        geometry: route.geometry,
+        geometry: {
+          type: "LineString",
+          coordinates: route.geometry.coordinates,
+        },
       },
     });
 
@@ -235,9 +236,6 @@ export default function MapboxMap() {
         <div className="mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <h3 className="font-semibold mb-2">Route Information:</h3>
           <p>Distance: {(routeData.routes[0].distance / 1000).toFixed(2)} km</p>
-          <p>
-            Duration: {Math.round(routeData.routes[0].duration / 60)} minutes
-          </p>
         </div>
       )}
     </div>
