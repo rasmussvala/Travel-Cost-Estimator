@@ -8,31 +8,19 @@ import { Button } from "./ui/button";
 
 type Coordinates = [number, number]; // [longitude, latitude]
 
-interface DirectionsResponse {
+type DirectionsResponse = {
   routes: Array<{
-    geometry: {
-      coordinates: Coordinates[];
-      type: string;
-    };
-    legs: Array<{
-      distance: number;
-    }>;
+    geometry: { coordinates: Coordinates[] };
     distance: number;
   }>;
-  waypoints: Array<{
-    distance: number;
-    name: string;
-    location: Coordinates;
-  }>;
-  code: string;
-}
+};
 
 export default function MapboxMap() {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const { resolvedTheme } = useTheme();
   const [ismounted, setIsMounted] = useState(false);
-  const [routeData, setRouteData] = useState<DirectionsResponse | null>(null);
+  const [routeData, setRouteData] = useState(null);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
 
@@ -42,28 +30,14 @@ export default function MapboxMap() {
     end: Coordinates,
     profile: string = "driving"
   ) => {
-    if (!start || !end) return;
+    const query = await fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/${profile}/${start};${end}?steps=true&geometries=geojson&access_token=${token}`
+    );
 
-    try {
-      const query = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/${profile}/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${token}`
-      );
+    const json = await query.json();
 
-      if (!query.ok) {
-        throw new Error(`HTTP error! status: ${query.status}`);
-      }
-
-      const json: DirectionsResponse = await query.json();
-
-      if (json.routes && json.routes.length > 0) {
-        setRouteData(json);
-        displayRouteOnMap(json.routes[0]);
-      } else {
-        console.error("No routes found");
-      }
-    } catch (error) {
-      console.error("Error fetching directions:", error);
-    }
+    setRouteData(json);
+    displayRouteOnMap(json.routes[0]);
   };
 
   // Display route on map
@@ -136,7 +110,6 @@ export default function MapboxMap() {
 
   // Example function to get directions between two points
   const getExampleDirections = () => {
-    // Example coordinates: Stockholm to Gothenburg
     const start: Coordinates = [18.0686, 59.3293]; // Stockholm
     const end: Coordinates = [11.9746, 57.7089]; // Gothenburg
 
