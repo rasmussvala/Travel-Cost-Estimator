@@ -16,31 +16,24 @@ type DirectionsResponse = {
 };
 
 export default function MapboxMap() {
-  const mapContainer = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map>(null);
   const { resolvedTheme } = useTheme();
   const [ismounted, setIsMounted] = useState(false);
-  const [routeData, setRouteData] = useState(null);
+  const [routeData, setRouteData] = useState<DirectionsResponse | null>(null);
 
-  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "";
+  const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-  // Directions API function
-  const getDirections = async (
-    start: Coordinates,
-    end: Coordinates,
-    profile: string = "driving"
-  ) => {
+  const getDirections = async (start: Coordinates, end: Coordinates) => {
     const query = await fetch(
       `https://api.mapbox.com/directions/v5/mapbox/driving/${start};${end}?steps=true&geometries=geojson&overview=full&access_token=${token}`
     );
-
     const json = await query.json();
 
     setRouteData(json);
     displayRouteOnMap(json.routes[0]);
   };
 
-  // Display route on map
   const displayRouteOnMap = (route: DirectionsResponse["routes"][0]) => {
     if (!mapRef.current) return;
 
@@ -89,7 +82,6 @@ export default function MapboxMap() {
     map.fitBounds(bounds, { padding: 50 });
   };
 
-  // Add markers for start and end points
   const addMarkers = (start: Coordinates, end: Coordinates) => {
     if (!mapRef.current) return;
 
@@ -108,16 +100,14 @@ export default function MapboxMap() {
       .addTo(mapRef.current);
   };
 
-  // Example function to get directions between two points
   const getExampleDirections = () => {
     const start: Coordinates = [18.0686, 59.3293]; // Stockholm
     const end: Coordinates = [11.9746, 57.7089]; // Gothenburg
 
     addMarkers(start, end);
-    getDirections(start, end, "driving");
+    getDirections(start, end);
   };
 
-  // Clear route from map
   const clearRoute = () => {
     if (!mapRef.current) return;
 
@@ -138,11 +128,9 @@ export default function MapboxMap() {
     setRouteData(null);
   };
 
-  // Create map on mount
+  // Init
   useEffect(() => {
-    // Early return if no container or map already initialized
     if (!mapContainer.current) return;
-    if (mapRef.current) return;
 
     mapboxgl.accessToken = token;
 
@@ -160,18 +148,15 @@ export default function MapboxMap() {
 
     mapRef.current.addControl(new mapboxgl.NavigationControl(), "top-right");
 
+    // Sorry for this. Can't figure out a better solution
+    setTimeout(() => {
+      setIsMounted(true);
+    }, 100);
+
     return () => {
       mapRef.current?.remove();
     };
   }, [token]);
-
-  // Sorry for this...
-  // Set isMounted to true after a short delay to ensure theme is loaded
-  useEffect(() => {
-    setTimeout(() => {
-      setIsMounted(true);
-    }, 100);
-  }, []);
 
   // Update map when theme changes and one time in the beginning
   useEffect(() => {
