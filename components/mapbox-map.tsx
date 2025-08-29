@@ -31,7 +31,7 @@ export default function MapboxMap() {
     profile: string = "driving"
   ) => {
     const query = await fetch(
-      `https://api.mapbox.com/directions/v5/mapbox/${profile}/${start};${end}?steps=true&geometries=geojson&access_token=${token}`
+      `https://api.mapbox.com/directions/v5/mapbox/driving/${start};${end}?steps=true&geometries=geojson&overview=full&access_token=${token}`
     );
 
     const json = await query.json();
