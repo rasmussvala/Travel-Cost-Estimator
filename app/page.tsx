@@ -15,7 +15,6 @@ const Home = () => {
     <div>
       <ModeToggle />
       <MapboxSearchWrapper setEndCoordinates={setEndCoordinates} />
-      <MapboxSearchWrapper setEndCoordinates={setEndCoordinates} />
       <MapboxMap end={endCoordinates} />
     </div>
   );
