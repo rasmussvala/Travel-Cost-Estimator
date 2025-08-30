@@ -16,10 +16,11 @@ type DirectionsResponse = {
 };
 
 type Props = {
+  start: Coordinates;
   end: Coordinates;
 };
 
-const MapboxMap = ({ end: endCoordinates }: Props) => {
+const MapboxMap = ({ start: start, end: end }: Props) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map>(null);
   const { resolvedTheme } = useTheme();
@@ -30,7 +31,7 @@ const MapboxMap = ({ end: endCoordinates }: Props) => {
 
   const getDirections = async (start: Coordinates, end: Coordinates) => {
     const query = await fetch(
-      `https://api.mapbox.com/directions/v5/mapbox/driving/${start};${endCoordinates}?steps=true&geometries=geojson&overview=full&access_token=${token}`
+      `https://api.mapbox.com/directions/v5/mapbox/driving/${start};${end}?steps=true&geometries=geojson&overview=full&access_token=${token}`
     );
     const json = await query.json();
 
@@ -100,15 +101,13 @@ const MapboxMap = ({ end: endCoordinates }: Props) => {
 
     // End marker (red)
     new mapboxgl.Marker({ color: "#ef4444" })
-      .setLngLat(endCoordinates)
+      .setLngLat(end)
       .addTo(mapRef.current);
   };
 
   const getExampleDirections = () => {
-    const start: Coordinates = [18.0686, 59.3293]; // Stockholm
-
-    addMarkers(start, endCoordinates);
-    getDirections(start, endCoordinates);
+    addMarkers(start, end);
+    getDirections(start, end);
   };
 
   const clearRoute = () => {

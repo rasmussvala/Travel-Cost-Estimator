@@ -8,14 +8,16 @@ import { useState } from "react";
 type Coordinates = [number, number];
 
 const Home = () => {
+  const [startCoordinates, setStartCoordinates] = useState<Coordinates>([0, 0]);
   const [endCoordinates, setEndCoordinates] = useState<Coordinates>([0, 0]);
   // const [fullAddress, setFullAddress] = useState(null);
 
   return (
     <div>
       <ModeToggle />
-      <MapboxSearchWrapper setEndCoordinates={setEndCoordinates} />
-      <MapboxMap end={endCoordinates} />
+      <MapboxSearchWrapper setCoordinates={setStartCoordinates} />
+      <MapboxSearchWrapper setCoordinates={setEndCoordinates} />
+      <MapboxMap start ={startCoordinates} end={endCoordinates} />
     </div>
   );
 };
