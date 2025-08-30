@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 
-type Coordinates = [number, number]; // [longitude, latitude]
+type Coordinates = [number, number];
 
 type DirectionsResponse = {
   routes: Array<{
@@ -15,7 +15,11 @@ type DirectionsResponse = {
   }>;
 };
 
-export default function MapboxMap() {
+type Props = {
+  end: Coordinates;
+};
+
+const MapboxMap = ({ end: endCoordinates }: Props) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map>(null);
   const { resolvedTheme } = useTheme();
@@ -26,7 +30,7 @@ export default function MapboxMap() {
 
   const getDirections = async (start: Coordinates, end: Coordinates) => {
     const query = await fetch(
-      `https://api.mapbox.com/directions/v5/mapbox/driving/${start};${end}?steps=true&geometries=geojson&overview=full&access_token=${token}`
+      `https://api.mapbox.com/directions/v5/mapbox/driving/${start};${endCoordinates}?steps=true&geometries=geojson&overview=full&access_token=${token}`
     );
     const json = await query.json();
 
@@ -96,16 +100,15 @@ export default function MapboxMap() {
 
     // End marker (red)
     new mapboxgl.Marker({ color: "#ef4444" })
-      .setLngLat(end)
+      .setLngLat(endCoordinates)
       .addTo(mapRef.current);
   };
 
   const getExampleDirections = () => {
     const start: Coordinates = [18.0686, 59.3293]; // Stockholm
-    const end: Coordinates = [11.9746, 57.7089]; // Gothenburg
 
-    addMarkers(start, end);
-    getDirections(start, end);
+    addMarkers(start, endCoordinates);
+    getDirections(start, endCoordinates);
   };
 
   const clearRoute = () => {
@@ -189,4 +192,6 @@ export default function MapboxMap() {
       )}
     </div>
   );
-}
+};
+
+export default MapboxMap;

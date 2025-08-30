@@ -4,10 +4,12 @@
 
 import { useState, useEffect } from "react";
 
-const MapboxSearchWrapper = () => {
+type Props = {
+  setEndCoordinates: React.Dispatch<React.SetStateAction<[number, number]>>;
+};
+
+const MapboxSearchWrapper = ({ setEndCoordinates: setEndCoordinates }: Props) => {
   const [SearchBox, setSearchBox] = useState<any>(null);
-  const [resultCoordinates, setResultCoordinates] = useState(null);
-  const [resultFullAddress, setResultFullAddress] = useState(null);
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   // Dynamically import on client only
@@ -24,12 +26,12 @@ const MapboxSearchWrapper = () => {
     const coordinates = firstResult.geometry.coordinates;
     const fullAddress = firstResult.properties.full_address;
 
-    setResultCoordinates(coordinates);
-    setResultFullAddress(fullAddress);
+    setEndCoordinates(coordinates);
+    // setResultFullAddress(fullAddress);
   };
 
-  console.log(resultCoordinates);
-  console.log(resultFullAddress);
+  // console.log(coordinates);
+  // console.log(fullAddress);
 
   if (!SearchBox) return null; // Render nothing until Searchbox is initialized.
 
