@@ -10,8 +10,8 @@ const MapboxSearchWrapper = () => {
   const [resultFullAddress, setResultFullAddress] = useState(null);
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
+  // Dynamically import on client only
   useEffect(() => {
-    // Dynamically import on client only
     import("@mapbox/search-js-react").then((mod) => {
       setSearchBox(() => mod.SearchBox);
     });
@@ -21,25 +21,21 @@ const MapboxSearchWrapper = () => {
     const firstResult = response.features[0];
 
     // Extract coordinates and full adress
-    const coordinates = firstResult.geometry?.coordinates;
-    const fullAddress = firstResult.properties?.full_address;
+    const coordinates = firstResult.geometry.coordinates;
+    const fullAddress = firstResult.properties.full_address;
 
     setResultCoordinates(coordinates);
     setResultFullAddress(fullAddress);
   };
 
-  if (!SearchBox) return null; // render nothing on server
-
   console.log(resultCoordinates);
   console.log(resultFullAddress);
 
+  if (!SearchBox) return null; // Render nothing until Searchbox is initialized.
+
   return (
     <div>
-      <SearchBox
-        accessToken={token}
-        onRetrieve={handleRetrieve}
-        mapboxgl={window.mapboxgl} // if you have mapboxgl loaded
-      />
+      <SearchBox accessToken={token} onRetrieve={handleRetrieve} />
     </div>
   );
 };
