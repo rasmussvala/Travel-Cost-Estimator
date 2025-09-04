@@ -170,25 +170,20 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
   }, [resolvedTheme, ismounted]);
 
   return (
-    <div className="w-full">
-      <div
-        ref={mapContainer}
-        className="h-[400px] rounded-lg overflow-hidden"
-      />
+    <div>
+      <div ref={mapContainer} className="h-[500px] md:h-[800px] rounded-lg" />
 
-      {/* Control buttons */}
-      <div className="space-x-2">
+      {/* <div className="space-x-2">
         <Button onClick={getExampleDirections}>Get Directions</Button>
         <Button onClick={clearRoute}>Clear Route</Button>
       </div>
 
-      {/* Route information */}
       {routeData && routeData.routes[0] && (
         <div>
           <h3 className="font-semibold">Route Information:</h3>
           <p>Distance: {(routeData.routes[0].distance / 1000).toFixed(2)} km</p>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

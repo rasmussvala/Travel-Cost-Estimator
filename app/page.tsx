@@ -13,11 +13,15 @@ const Home = () => {
   // const [fullAddress, setFullAddress] = useState(null);
 
   return (
-    <div>
-      <ModeToggle />
-      <MapboxSearchWrapper setCoordinates={setStartCoordinates} />
-      <MapboxSearchWrapper setCoordinates={setEndCoordinates} />
-      <MapboxMap start ={startCoordinates} end={endCoordinates} />
+    <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="order-2 lg:order-1 lg:col-span-1">
+        <ModeToggle />
+        <MapboxSearchWrapper setCoordinates={setStartCoordinates} />
+        <MapboxSearchWrapper setCoordinates={setEndCoordinates} />
+      </div>
+      <div className="order-1 lg:order-2 lg:col-span-2">
+        <MapboxMap start={startCoordinates} end={endCoordinates} />
+      </div>
     </div>
   );
 };
