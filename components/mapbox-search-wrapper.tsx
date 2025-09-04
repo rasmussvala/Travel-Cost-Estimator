@@ -8,9 +8,13 @@ type Coordinates = [number, number];
 
 type Props = {
   setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
+  setFullAddress: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const MapboxSearchWrapper = ({ setCoordinates: setCoordinates }: Props) => {
+const MapboxSearchWrapper = ({
+  setCoordinates: setCoordinates,
+  setFullAddress: setFullAddress,
+}: Props) => {
   const [SearchBox, setSearchBox] = useState<any>(null);
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -26,10 +30,10 @@ const MapboxSearchWrapper = ({ setCoordinates: setCoordinates }: Props) => {
 
     // Extract coordinates and full adress
     const coordinates = firstResult.geometry.coordinates;
-    // const fullAddress = firstResult.properties.full_address;
+    const fullAddress = firstResult.properties.full_address;
 
     setCoordinates(coordinates);
-    // setResultFullAddress(fullAddress);
+    setFullAddress(fullAddress);
   };
 
   if (!SearchBox) return null; // Render nothing until Searchbox is initialized.

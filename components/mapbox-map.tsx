@@ -105,7 +105,7 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
       .addTo(mapRef.current);
   };
 
-  const getExampleDirections = () => {
+  const updateMap = () => {
     addMarkers(start, end);
     getDirections(start, end);
   };
@@ -144,8 +144,8 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
           lightPreset: "day",
         },
       },
-      center: [18, 59],
-      zoom: 5,
+      center: [28, 48],
+      zoom: 2,
     });
 
     mapRef.current.addControl(new mapboxgl.NavigationControl(), "top-right");
@@ -169,22 +169,16 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
     });
   }, [resolvedTheme, ismounted]);
 
+  useEffect(() => {
+    if (start[0] === 0 && start[1] === 0 && end[0] === 0 && end[1] === 0)
+      return;
+
+    clearRoute();
+    updateMap();
+  }, [start, end]);
+
   return (
-    <div>
-      <div ref={mapContainer} className="h-[500px] md:h-[800px] rounded-lg" />
-
-      {/* <div className="space-x-2">
-        <Button onClick={getExampleDirections}>Get Directions</Button>
-        <Button onClick={clearRoute}>Clear Route</Button>
-      </div>
-
-      {routeData && routeData.routes[0] && (
-        <div>
-          <h3 className="font-semibold">Route Information:</h3>
-          <p>Distance: {(routeData.routes[0].distance / 1000).toFixed(2)} km</p>
-        </div>
-      )} */}
-    </div>
+    <div ref={mapContainer} className="h-[500px] md:h-[800px] rounded-sm" />
   );
 };
 
