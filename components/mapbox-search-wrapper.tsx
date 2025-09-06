@@ -7,8 +7,8 @@ import { useState, useEffect } from "react";
 type Coordinates = [number, number];
 
 type Props = {
-  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
-  setFullAddress: React.Dispatch<React.SetStateAction<string>>;
+  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates | undefined>>;
+  setFullAddress: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 const MapboxSearchWrapper = ({
@@ -26,6 +26,8 @@ const MapboxSearchWrapper = ({
   }, []);
 
   const handleRetrieve = (response: any) => {
+    if (!setCoordinates || !setFullAddress) return;
+
     const firstResult = response.features[0];
 
     // Extract coordinates and full adress

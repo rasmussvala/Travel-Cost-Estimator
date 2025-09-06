@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
 
 type Coordinates = [number, number];
 
@@ -16,16 +15,22 @@ type DirectionsResponse = {
 };
 
 type Props = {
-  start: Coordinates;
-  end: Coordinates;
+  start: Coordinates | undefined;
+  end: Coordinates | undefined;
+  setRouteData: React.Dispatch<
+    React.SetStateAction<DirectionsResponse | undefined>
+  >;
 };
 
-const MapboxMap = ({ start: start, end: end }: Props) => {
+const MapboxMap = ({
+  start: start,
+  end: end,
+  setRouteData: setRouteData,
+}: Props) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map>(null);
   const { resolvedTheme } = useTheme();
   const [ismounted, setIsMounted] = useState(false);
-  const [routeData, setRouteData] = useState<DirectionsResponse | null>(null);
 
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -105,11 +110,6 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
       .addTo(mapRef.current);
   };
 
-  const updateMap = () => {
-    addMarkers(start, end);
-    getDirections(start, end);
-  };
-
   const clearRoute = () => {
     if (!mapRef.current) return;
 
@@ -126,8 +126,6 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
     // Remove markers
     const existingMarkers = document.querySelectorAll(".mapboxgl-marker");
     existingMarkers.forEach((marker) => marker.remove());
-
-    setRouteData(null);
   };
 
   // Init
@@ -170,11 +168,11 @@ const MapboxMap = ({ start: start, end: end }: Props) => {
   }, [resolvedTheme, ismounted]);
 
   useEffect(() => {
-    if (start[0] === 0 && start[1] === 0 && end[0] === 0 && end[1] === 0)
-      return;
+    if (!start || !end) return;
 
     clearRoute();
-    updateMap();
+    addMarkers(start, end);
+    getDirections(start, end);
   }, [start, end]);
 
   return (
