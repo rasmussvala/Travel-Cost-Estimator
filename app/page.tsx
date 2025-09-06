@@ -5,8 +5,7 @@ import MapboxMap from "@/components/mapbox-map";
 import MapboxSearchWrapper from "@/components/mapbox-search-wrapper";
 import { useState } from "react";
 import FuelPrices from "@/components/fuel-prices";
-import { Input } from "@/components/ui/input";
-import FuelInput from "@/components/fuel-input";
+import FuelConsumption from "@/components/fuel-consumption";
 
 type Coordinates = [number, number];
 
@@ -36,7 +35,7 @@ const Home = () => {
       </header>
       <main className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="order-2 md:order-1 md:col-span-1 space-y-2">
-          <h2 className="font-bold">Locations</h2>
+          <h2 className="font-bold">Route</h2>
           <MapboxSearchWrapper
             setCoordinates={setStartCoordinates}
             setFullAddress={setStartFullAddress}
@@ -66,8 +65,7 @@ const Home = () => {
           <br />
 
           <h2 className="font-bold">Fuel Consumption</h2>
-          <FuelInput />
-
+          <FuelConsumption />
         </div>
         <div className="order-1 md:order-2 md:col-span-2">
           <MapboxMap

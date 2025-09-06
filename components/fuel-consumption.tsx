@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 
-export default function FuelInput() {
+export default function FuelConsumption() {
   return (
     <div className="inline-flex border rounded-md overflow-hidden w-32 border-border">
       <Input
