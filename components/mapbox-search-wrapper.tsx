@@ -9,11 +9,13 @@ type Coordinates = [number, number];
 type Props = {
   setCoordinates: React.Dispatch<React.SetStateAction<Coordinates | undefined>>;
   setFullAddress: React.Dispatch<React.SetStateAction<string | undefined>>;
+  placeholder: string;
 };
 
 const MapboxSearchWrapper = ({
   setCoordinates: setCoordinates,
   setFullAddress: setFullAddress,
+  placeholder: placeholder,
 }: Props) => {
   const [SearchBox, setSearchBox] = useState<any>(null);
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -42,7 +44,11 @@ const MapboxSearchWrapper = ({
 
   return (
     <div>
-      <SearchBox accessToken={token} onRetrieve={handleRetrieve} />
+      <SearchBox
+        accessToken={token}
+        onRetrieve={handleRetrieve}
+        placeholder={placeholder}
+      />
     </div>
   );
 };

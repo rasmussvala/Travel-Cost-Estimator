@@ -176,7 +176,7 @@ const MapboxMap = ({
   }, [start, end]);
 
   return (
-    <div ref={mapContainer} className="h-[500px] md:h-[800px] rounded-sm" />
+    <div ref={mapContainer} className="h-[400px] md:h-[800px] rounded-sm" />
   );
 };
 
