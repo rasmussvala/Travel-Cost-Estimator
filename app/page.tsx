@@ -4,6 +4,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import MapboxMap from "@/components/mapbox-map";
 import MapboxSearchWrapper from "@/components/mapbox-search-wrapper";
 import { useState } from "react";
+import FuelPrices from "@/components/fuel-prices";
 
 type Coordinates = [number, number];
 
@@ -39,6 +40,8 @@ const Home = () => {
         {routeData && (
           <p>Distance: {(routeData.routes[0].distance / 1000).toFixed(1)} km</p>
         )}
+
+        <FuelPrices />
       </div>
       <div className="order-1 lg:order-2 lg:col-span-2">
         <MapboxMap
