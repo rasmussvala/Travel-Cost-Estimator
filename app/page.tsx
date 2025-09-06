@@ -5,6 +5,8 @@ import MapboxMap from "@/components/mapbox-map";
 import MapboxSearchWrapper from "@/components/mapbox-search-wrapper";
 import { useState } from "react";
 import FuelPrices from "@/components/fuel-prices";
+import { Input } from "@/components/ui/input";
+import FuelInput from "@/components/fuel-input";
 
 type Coordinates = [number, number];
 
@@ -24,15 +26,15 @@ const Home = () => {
 
   return (
     <div className="p-2 sm:p-4">
-      <div className="flex mb-8 justify-between">
+      <header className="flex mb-8 justify-between">
         <h1 className="text-6xl font-extrabold tracking-tight">
           Travel Cost
           <br />
           Estimator
         </h1>
         <ModeToggle />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      </header>
+      <main className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="order-2 md:order-1 md:col-span-1 space-y-2">
           <h2 className="font-bold">Locations</h2>
           <MapboxSearchWrapper
@@ -59,8 +61,13 @@ const Home = () => {
           <br />
 
           <h2 className="font-bold">Fuel Prices</h2>
-
           <FuelPrices />
+
+          <br />
+
+          <h2 className="font-bold">Fuel Consumption</h2>
+          <FuelInput />
+
         </div>
         <div className="order-1 md:order-2 md:col-span-2">
           <MapboxMap
@@ -69,7 +76,18 @@ const Home = () => {
             setRouteData={setRouteData}
           />
         </div>
-      </div>
+      </main>
+      <footer className="text-center py-6 border-t border-border text-sm text-muted-foreground">
+        2025 - Created by me,{" "}
+        <a
+          href="https://rasmussvala.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-primary"
+        >
+          Rasmus
+        </a>
+      </footer>
     </div>
   );
 };
