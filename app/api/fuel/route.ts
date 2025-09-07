@@ -1,9 +1,12 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { calculateFuelAverages } from "@/lib/fuelUtils";
 
 export async function GET() {
   const res = await fetch(
-    "https://henrikhjelm.se/api/getdata.php?lan=stockholms-lan"
+    "https://henrikhjelm.se/api/getdata.php?lan=stockholms-lan",
+    { cache: "no-store" }
   );
 
   if (!res.ok) {
