@@ -12,6 +12,8 @@ export default function FuelConsumption({
       <Input
         placeholder="6.7"
         type="number"
+        min={0}
+        step={0.1}
         className="rounded-none border-none flex-1 text-right bg-input text-foreground placeholder-muted-foreground"
         onChange={(e) => {
           const value = e.target.value;
