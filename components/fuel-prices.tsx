@@ -15,7 +15,11 @@ type FuelAverages = {
   [fuelType: string]: number;
 };
 
-export default function FuelPrices() {
+type Props = {
+  setFuelPrice: React.Dispatch<React.SetStateAction<number | undefined>>;
+};
+
+export default function FuelPrices({ setFuelPrice: setFuelPrice }: Props) {
   const [averages, setAverages] = useState<FuelAverages | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +44,13 @@ export default function FuelPrices() {
   return (
     <div className="flex">
       {/* <p>Fuel</p> */}
-      <Select>
+      <Select
+        onValueChange={(value) => {
+          if (averages) {
+            setFuelPrice(averages[value]);
+          }
+        }}
+      >
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select fuel type" />
         </SelectTrigger>

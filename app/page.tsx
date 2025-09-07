@@ -3,7 +3,7 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import MapboxMap from "@/components/mapbox-map";
 import MapboxSearchWrapper from "@/components/mapbox-search-wrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FuelPrices from "@/components/fuel-prices";
 import FuelConsumption from "@/components/fuel-consumption";
 
@@ -22,6 +22,16 @@ const Home = () => {
   const [startFullAddress, setStartFullAddress] = useState<string>();
   const [endFullAddress, setEndFullAddress] = useState<string>();
   const [routeData, setRouteData] = useState<DirectionsResponse>();
+  const [fuelPrice, setFuelPrice] = useState<number>();
+  const [fuelConsumption, setFuelConsumption] = useState<number>();
+  const [price, setPrice] = useState<number>();
+
+  useEffect(() => {
+    if (!fuelPrice || !fuelConsumption || !routeData) return;
+    setPrice(
+      (fuelConsumption / 100) * fuelPrice * routeData.routes[0].distance / 1000
+    );
+  }, [fuelPrice, fuelConsumption, routeData]);
 
   return (
     <div className="p-2 sm:p-4">
@@ -60,12 +70,25 @@ const Home = () => {
           <br />
 
           <h2 className="font-bold">Fuel Prices</h2>
-          <FuelPrices />
+          <FuelPrices setFuelPrice={setFuelPrice} />
 
           <br />
 
           <h2 className="font-bold">Fuel Consumption</h2>
-          <FuelConsumption />
+          <FuelConsumption setFuelConsumption={setFuelConsumption} />
+
+          <br />
+          <br />
+
+          <h2 className="font-bold">Total Cost</h2>
+          <p>
+            Distance:{" "}
+            {routeData
+              ? (routeData.routes[0].distance / 1000).toFixed(1)
+              : "0.0"}{" "}
+            km
+          </p>
+          <p>Price: {price ? price.toFixed(1) : 0} kr</p>
         </div>
         <div className="order-1 md:order-2 md:col-span-2">
           <MapboxMap
