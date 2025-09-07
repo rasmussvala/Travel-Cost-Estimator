@@ -14,7 +14,15 @@ export default function FuelConsumption({
         type="number"
         min={0}
         step={0.1}
-        className="rounded-none border-none flex-1 text-right bg-input text-foreground placeholder-muted-foreground"
+        className="
+    rounded-none border-none flex-1 text-right bg-input text-foreground placeholder-muted-foreground
+    [appearance:textfield]                     /* fallback + helps in Firefox */
+    [-moz-appearance:textfield]               /* Firefox specifically */
+    [&::-webkit-inner-spin-button]:appearance-none
+    [&::-webkit-outer-spin-button]:appearance-none
+    [&::-webkit-inner-spin-button]:m-0
+    [&::-webkit-outer-spin-button]:m-0
+             [moz-appearance:textfield]"
         onChange={(e) => {
           const value = e.target.value;
           setFuelConsumption(value ? parseFloat(value) : undefined);
