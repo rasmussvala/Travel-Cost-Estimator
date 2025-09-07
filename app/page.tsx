@@ -29,7 +29,8 @@ const Home = () => {
   useEffect(() => {
     if (!fuelPrice || !fuelConsumption || !routeData) return;
     setPrice(
-      (fuelConsumption / 100) * fuelPrice * routeData.routes[0].distance / 1000
+      ((fuelConsumption / 100) * fuelPrice * routeData.routes[0].distance) /
+        1000
     );
   }, [fuelPrice, fuelConsumption, routeData]);
 
@@ -89,6 +90,7 @@ const Home = () => {
             km
           </p>
           <p>Price: {price ? price.toFixed(1) : 0} kr</p>
+          <br />
         </div>
         <div className="order-1 md:order-2 md:col-span-2">
           <MapboxMap
