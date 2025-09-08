@@ -18,6 +18,7 @@ const MapboxSearchWrapper = ({
   placeholder: placeholder,
 }: Props) => {
   const [SearchBox, setSearchBox] = useState<any>(null);
+  const [searchValue, setSearchValue] = useState("");
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   // Dynamically import on client only
@@ -48,6 +49,8 @@ const MapboxSearchWrapper = ({
         accessToken={token}
         onRetrieve={handleRetrieve}
         placeholder={placeholder}
+        value={searchValue}
+        onChange={setSearchValue}
       />
     </div>
   );
