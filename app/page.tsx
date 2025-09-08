@@ -47,26 +47,27 @@ const Home = () => {
       <main className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="order-2 md:order-1 md:col-span-1 space-y-2">
           <h2 className="font-bold">Route</h2>
-          <MapboxSearchWrapper
-            setCoordinates={setStartCoordinates}
-            setFullAddress={setStartFullAddress}
-            placeholder="Start"
-          />
-          <p>{startFullAddress ? startFullAddress : "No location selected"}</p>
-          <MapboxSearchWrapper
-            setCoordinates={setEndCoordinates}
-            setFullAddress={setEndFullAddress}
-            placeholder="End"
-          />
-          <p>{endFullAddress ? endFullAddress : "No location selected"}</p>
+          <div className="mb-4">
+            <MapboxSearchWrapper
+              setCoordinates={setStartCoordinates}
+              setFullAddress={setStartFullAddress}
+              placeholder="Start"
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              {startFullAddress || "No location selected"}
+            </p>
+          </div>
 
-          {/* <p>
-            {routeData
-              ? "Distance: " +
-                (routeData.routes[0].distance / 1000).toFixed(1) +
-                " km"
-              : "Distance: 0.0 km"}
-          </p> */}
+          <div className="mb-4">
+            <MapboxSearchWrapper
+              setCoordinates={setEndCoordinates}
+              setFullAddress={setEndFullAddress}
+              placeholder="End"
+            />
+            <p className="text-sm text-muted-foreground mt-1">
+              {endFullAddress || "No location selected"}
+            </p>
+          </div>
 
           <br />
 
