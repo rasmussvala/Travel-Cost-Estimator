@@ -81,7 +81,7 @@ const Home = () => {
           <br />
           <br />
 
-          <h2 className="font-bold">Total Cost</h2>
+          <h2 className="font-bold">Trip Summary</h2>
           <p>
             Distance:{" "}
             {routeData
