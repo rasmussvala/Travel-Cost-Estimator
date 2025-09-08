@@ -151,7 +151,7 @@ const MapboxMap = ({
     // Sorry for this. Can't figure out a better solution
     setTimeout(() => {
       setIsMounted(true);
-    }, 100);
+    }, 1000);
 
     return () => {
       mapRef.current?.remove();
