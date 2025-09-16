@@ -82,6 +82,7 @@ const MapboxMap = ({
         "line-color": "#3887be",
         "line-width": 5,
         "line-opacity": 0.75,
+        "line-emissive-strength": 0.95, // for lighting up the line in dark mode
       },
     });
 
